@@ -15,5 +15,9 @@
             android:id="@+id/nav_tables"
             android:icon="@drawable/ic_grid_on_black_24dp"
             android:title="Statystyki" />
+        <item
+            android:id="@+id/nav_notes"
+            android:icon="@drawable/ic_create_black_24dp"
+            android:title="Notes" />
     </group>
 </menu>
