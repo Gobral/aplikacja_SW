@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_notes:
                 openNotes();
                 break;
+            case R.id.nav_maps:
+                openMaps();
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -62,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public void openNotes(){
         Intent intent = new Intent(this, Notes2Activity.class);
+        startActivity(intent);
+    }
+    public void openMaps(){
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 }

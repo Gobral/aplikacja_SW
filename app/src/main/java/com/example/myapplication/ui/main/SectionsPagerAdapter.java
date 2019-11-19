@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.myapplication.R;
 import com.example.myapplication.StatystykiFragment;
+import com.example.myapplication.TextEditFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -30,7 +31,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-        return new StatystykiFragment();
+        switch(position) {
+            case 0:
+                return new TextEditFragment();
+            default:
+                return new StatystykiFragment();
+
+        }
     }
 
     @Nullable

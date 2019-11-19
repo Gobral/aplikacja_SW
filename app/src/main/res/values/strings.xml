@@ -7,4 +7,8 @@
     <string name="tab_text_1">Tekst</string>
     <string name="tab_text_2">Nagrania</string>
     <string name="tab_text_3">Zdjęcia</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
