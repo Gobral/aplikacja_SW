@@ -13,14 +13,14 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TextEditFragment extends Fragment {
+public class ZdjeciaFragment extends Fragment {
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_text_edit, container, false);
+        return inflater.inflate(R.layout.fragment_zdjecia, container, false);
     }
 
 }

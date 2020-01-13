@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.myapplication.NagraniaFragment;
 import com.example.myapplication.R;
-import com.example.myapplication.StatystykiFragment;
 import com.example.myapplication.TextEditFragment;
+import com.example.myapplication.ZdjeciaFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -31,13 +32,23 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
+        Fragment fragment = null;
         switch(position) {
             case 0:
-                return new TextEditFragment();
+                fragment = new TextEditFragment();
+                break;
+            case 1:
+                fragment = new NagraniaFragment();
+                break;
+            case 2:
+                fragment = new ZdjeciaFragment();
+                break;
             default:
-                return new StatystykiFragment();
+                fragment = null;
 
         }
+        return fragment;
+
     }
 
     @Nullable
