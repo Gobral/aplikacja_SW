@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StatystykiFragment()).commit();
                 break;
             case R.id.nav_notes:
-                openNotes();
+                // openNotes();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PodgladNotatek()).commit();
                 break;
             case R.id.nav_maps:
                 openMaps();
