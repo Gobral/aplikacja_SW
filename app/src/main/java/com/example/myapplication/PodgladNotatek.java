@@ -42,7 +42,7 @@ public class PodgladNotatek extends Fragment {
         layoutManager = new LinearLayoutManager(lwew.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new AdapterPodgladuNotatki(lista_notatek, getContext());
+        mAdapter = new AdapterPodgladuNotatki(lista_notatek, recyclerView, getContext());
         recyclerView.setAdapter(mAdapter);
 
 

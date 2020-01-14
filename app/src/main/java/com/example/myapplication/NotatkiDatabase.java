@@ -6,7 +6,7 @@ import androidx.room.TypeConverters;
 
 import com.example.myapplication.NotatkaEntity;
 
-@Database(entities = {NotatkaEntity.class}, version = 1)
+@Database(entities = {NotatkaEntity.class}, version = 1, exportSchema = false)
 @TypeConverters({MyTypeConverters.class})
 public abstract class NotatkiDatabase extends RoomDatabase {
     public abstract NotatkiDAO notatkiDAO();

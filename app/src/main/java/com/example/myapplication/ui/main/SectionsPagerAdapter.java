@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.myapplication.NagraniaFragment;
+import com.example.myapplication.NotatkaEntity;
 import com.example.myapplication.R;
 import com.example.myapplication.TextEditFragment;
 import com.example.myapplication.ZdjeciaFragment;
@@ -22,6 +23,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
     private final Context mContext;
+    private NotatkaEntity notatkaEntity;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);

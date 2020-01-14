@@ -12,15 +12,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.myapplication.ui.main.SectionsPagerAdapter;
 
 public class Notes2Activity extends AppCompatActivity {
+    private NotatkaEntity notatkaEntity;
+    private String nazwaNotatki;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes2);
+        Bundle b = getIntent().getExtras();
+        nazwaNotatki = b.getString("nazwa");
+        Toast.makeText(this, nazwaNotatki, Toast.LENGTH_LONG).show();
+
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -36,4 +43,5 @@ public class Notes2Activity extends AppCompatActivity {
             }
         });
     }
+
 }
