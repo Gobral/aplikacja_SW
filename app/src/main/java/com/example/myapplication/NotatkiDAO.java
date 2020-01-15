@@ -34,7 +34,7 @@ public interface NotatkiDAO {
     public List<NotatkaEntity> loadAllNotatki();
 
     @Query("SELECT * FROM notatkaentity WHERE nazwaNotatki = :nazwaNotatki")
-    public NotatkaEntity loadHoardByName(String nazwaNotatki);
+    public NotatkaEntity loadNotatkaByName(String nazwaNotatki);
 
     @Query("SELECT * FROM notatkaentity WHERE nazwaNotatki IN(:nazwyNotatkek)")
     public List<NotatkaEntity> findByNazwy(String[] nazwyNotatkek);

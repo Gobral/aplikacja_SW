@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -16,6 +19,9 @@ import android.widget.Toast;
 
 import com.example.myapplication.ui.main.SectionsPagerAdapter;
 
+import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutionException;
+
 public class Notes2Activity extends AppCompatActivity {
     private NotatkaEntity notatkaEntity;
     private String nazwaNotatki;
@@ -23,12 +29,20 @@ public class Notes2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notes2);
+
         Bundle b = getIntent().getExtras();
         nazwaNotatki = b.getString("nazwa");
-        Toast.makeText(this, nazwaNotatki, Toast.LENGTH_LONG).show();
+        try {
+            notatkaEntity = new WczytajNotatke(this, nazwaNotatki).execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        setContentView(R.layout.activity_notes2);
+
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), notatkaEntity);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
@@ -43,5 +57,34 @@ public class Notes2Activity extends AppCompatActivity {
             }
         });
     }
+
+    private class WczytajNotatke extends AsyncTask<Void, Void, NotatkaEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private String nazwa;
+        private Context context;
+
+        public WczytajNotatke(Activity activity, String nazwa) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.nazwa = nazwa;
+        }
+
+        @Override
+        protected NotatkaEntity doInBackground(Void... params) {
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            NotatkaEntity ne = null;
+            try {
+                ne = notatkiDb.notatkiDAO().loadNotatkaByName(nazwa);
+            }
+            catch (Exception e){
+
+            }
+            return ne;
+        }
+
+    }
+
 
 }
