@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.ui.main.SectionsPagerAdapter;
@@ -41,6 +42,14 @@ public class Notes2Activity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_notes2);
+
+        TextView tv = findViewById(R.id.title);
+        if(nazwaNotatki.length() > 12){
+            tv.setText(nazwaNotatki.substring(0,10) + "... - Edycja");
+        }
+        else{
+            tv.setText(nazwaNotatki + " - Edycja");
+        }
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), notatkaEntity);
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -77,6 +86,7 @@ public class Notes2Activity extends AppCompatActivity {
             NotatkaEntity ne = null;
             try {
                 ne = notatkiDb.notatkiDAO().loadNotatkaByName(nazwa);
+
             }
             catch (Exception e){
 

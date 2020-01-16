@@ -24,14 +24,9 @@ public final class DodanieAsyncTask  extends AsyncTask<Void, Void, Integer> {
 
         NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
         try {
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test4", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test5", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test6", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test7", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test8", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test9", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test10", new Date(2020, 2,2), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test11", new Date(2020, 2,2), "lorem psum"));
+            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test12", new Date(2020, 2,2, 18, 20), "lorem psum"));
+            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test13", new Date(2020, 2,2, 5, 20), "lorem psum"));
+            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test14", new Date(2020, 2,2, 12, 20), "lorem psum"));
         }
         catch (Exception e){
 

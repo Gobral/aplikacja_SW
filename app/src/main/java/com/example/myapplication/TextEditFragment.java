@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.lang.ref.WeakReference;
 
 
 /**
@@ -36,6 +41,41 @@ public class TextEditFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDetach () {
+        new ZapiszNotatke(getActivity(), notatkaEntity, editText.getText().toString()).execute();
+        super.onDetach();
+    }
+
+    private class ZapiszNotatke extends AsyncTask<Void, Void, NotatkaEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private Context context;
+        private NotatkaEntity notatkaEntity;
+        private String nowa_zawartosc;
+
+        public ZapiszNotatke(Activity activity, NotatkaEntity notatkaEntity, String nowa_zawartosc) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.notatkaEntity = notatkaEntity;
+            this.nowa_zawartosc = nowa_zawartosc;
+        }
+
+        @Override
+        protected NotatkaEntity doInBackground(Void... params) {
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            NotatkaEntity ne = null;
+            try {
+                notatkiDb.notatkiDAO().updateZawartosc(nowa_zawartosc, notatkaEntity.getNazwaNotatki());
+            }
+            catch (Exception e){
+
+            }
+            return ne;
+        }
+
+    }
 
 
 }

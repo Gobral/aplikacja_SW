@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgladuNotatki.MyViewHolderNotatka> {
@@ -52,7 +54,10 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
     @Override
     public void onBindViewHolder(AdapterPodgladuNotatki.MyViewHolderNotatka holder, int position) {
         holder.textView_nazwa.setText(lista_notatek.get(position).getNazwaNotatki());
-        holder.textView_data.setText(lista_notatek.get(position).getDataDodania().toString());
+        Date d = lista_notatek.get(position).getDataDodania();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        holder.textView_data.setText(cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + (cal.get(Calendar.YEAR) - 1900) + "  " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
     }
 
     @Override
