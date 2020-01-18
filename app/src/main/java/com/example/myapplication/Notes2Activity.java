@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -19,6 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.ui.main.SectionsPagerAdapter;
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.VideoResult;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutionException;
@@ -30,7 +35,6 @@ public class Notes2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Bundle b = getIntent().getExtras();
         nazwaNotatki = b.getString("nazwa");
         try {
@@ -43,6 +47,24 @@ public class Notes2Activity extends AppCompatActivity {
 
         setContentView(R.layout.activity_notes2);
 
+        /*
+        CameraView camera = findViewById(R.id.camera);
+        camera.setLifecycleOwner(this);
+
+        camera.addCameraListener(new CameraListener() {
+            @Override
+            public void onPictureTaken(PictureResult result) {
+                // A Picture was taken!
+            }
+
+            @Override
+            public void onVideoTaken(VideoResult result) {
+                // A Video was taken!
+            }
+
+            // And much more
+        });
+        */
         TextView tv = findViewById(R.id.title);
         if(nazwaNotatki.length() > 12){
             tv.setText(nazwaNotatki.substring(0,10) + "... - Edycja");
@@ -61,8 +83,10 @@ public class Notes2Activity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent intent = new Intent(Notes2Activity.this, AparatActivity.class);
+                intent.putExtra("nazwa", notatkaEntity.getNazwaNotatki());
+                startActivity(intent);
             }
         });
     }
