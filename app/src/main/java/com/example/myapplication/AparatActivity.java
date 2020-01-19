@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.FileCallback;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
 import com.otaliastudios.cameraview.controls.Mode;
@@ -26,6 +28,10 @@ import com.otaliastudios.cameraview.controls.Mode;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class AparatActivity extends AppCompatActivity {
@@ -37,6 +43,8 @@ public class AparatActivity extends AppCompatActivity {
     };
     private NotatkaEntity notatkaEntity;
     private String nazwaNotatki;
+    private File ostatni_plik;
+    private List<File> nowePliki;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,7 @@ public class AparatActivity extends AppCompatActivity {
         FloatingActionButton fbzdjecie = findViewById(R.id.fbzdjecie);
         FloatingActionButton fbfilm = findViewById(R.id.fbvideo);
         File path = getExternalCacheDir();
+        nowePliki = new ArrayList<>();
 
         System.out.println(notatkaEntity.getNazwaNotatki());
 
@@ -80,8 +89,26 @@ public class AparatActivity extends AppCompatActivity {
             public void onPictureTaken(PictureResult result) {
                 // A Picture was taken!
                 Toast.makeText(AparatActivity.this, "Zrobiono zdjecie", Toast.LENGTH_SHORT).show();
+                String nazwa = generujNazwe("jpg", "zdjecie");
+                ostatni_plik = new File(path, nazwa);
+                try {
+                    ostatni_plik.createNewFile();
+                    System.out.println(ostatni_plik.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                result.toFile(ostatni_plik, new FileCallback() {
+                    @Override
+                    public void onFileReady(@Nullable File file) {
+
+                    }
+                });
                 fbfilm.setVisibility(FloatingActionButton.VISIBLE);
                 fbzdjecie.setVisibility(FloatingActionButton.VISIBLE);
+
+                File kopiaPliku = new File(ostatni_plik.getPath());
+                new DodajPlikZAparatu(AparatActivity.this, kopiaPliku, nazwaNotatki).execute();
+                nowePliki.add(kopiaPliku);
 
             }
 
@@ -89,7 +116,10 @@ public class AparatActivity extends AppCompatActivity {
             public void onVideoTaken(VideoResult result) {
                 fbfilm.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorCzekania)));
                 fbzdjecie.setVisibility(FloatingActionButton.VISIBLE);
-                // A Video was taken!
+
+                File kopiaPliku = new File(ostatni_plik.getPath());
+                new DodajPlikZAparatu(AparatActivity.this, kopiaPliku, nazwaNotatki).execute();
+                nowePliki.add(kopiaPliku);
             }
 
             // And much more
@@ -112,15 +142,17 @@ public class AparatActivity extends AppCompatActivity {
                 if(!camera.isTakingVideo() && !camera.isTakingPicture()){
                     camera.setMode(Mode.VIDEO);
                     fbfilm.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    File file = new File(path, "DemoPicture.mp4");
+                    fbzdjecie.setVisibility(FloatingActionButton.INVISIBLE);
+                    String nazwa = generujNazwe("mp4", "film");
+
+                    ostatni_plik = new File(path, nazwa);
                     try {
-                        file.createNewFile();
-                        System.out.println(file.getAbsolutePath());
+                        ostatni_plik.createNewFile();
+                        System.out.println(ostatni_plik.getAbsolutePath());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    fbzdjecie.setVisibility(FloatingActionButton.INVISIBLE);
-                    camera.takeVideo(file);
+                    camera.takeVideo(ostatni_plik);
                 }
                 else if(camera.isTakingVideo()) {
                     camera.stopVideo();
@@ -155,5 +187,42 @@ public class AparatActivity extends AppCompatActivity {
             return ne;
         }
 
+    }
+
+    private class DodajPlikZAparatu extends AsyncTask<Void, Void, String> {
+
+        private WeakReference<Activity> weakActivity;
+        private String nazwa;
+        private String path;
+        private Context context;
+
+        public DodajPlikZAparatu(Activity activity, File plik, String nazwaNotatki) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.path= plik.getPath();
+            this.nazwa = nazwaNotatki;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            try {
+                notatkiDb.aparatDAO().insertZdjecie(new AparatEntity(path, nazwa));
+            }
+            catch (Exception e){
+
+            }
+            return path;
+        }
+
+    }
+
+    public String generujNazwe(String koncowka, String przed){
+        String ret = "";
+        Calendar currentTime = Calendar.getInstance();
+        ret += przed + "_" + currentTime.get(currentTime.YEAR) + currentTime.get(currentTime.MONTH) + currentTime.get(currentTime.DAY_OF_MONTH) + "_" + currentTime.get(currentTime.HOUR_OF_DAY)
+                + currentTime.get(currentTime.MINUTE) + currentTime.get(currentTime.SECOND) + currentTime.get(currentTime.MILLISECOND) + "." + koncowka;
+        return  ret;
     }
 }
