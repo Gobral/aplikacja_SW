@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,8 +42,7 @@ public class ZdjeciaFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_zdjecia, container, false);
         RecyclerView recyclerView = rootView.findViewById(R.id.pliki_z_aparatu_grid);
 
-        LinearLayout lwew = rootView.findViewById(R.id.zdjecia_layout);
-        layoutManager = new LinearLayoutManager(lwew.getContext());
+        layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
 
         mAdapter = new AdapterPlikowZAparatu(lista_plikow, recyclerView, getContext());
