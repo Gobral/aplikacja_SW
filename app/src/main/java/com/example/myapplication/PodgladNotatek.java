@@ -23,7 +23,6 @@ import java.util.List;
 
 public class PodgladNotatek extends Fragment {
 
-    private RecyclerView recyclerView;
     private List<NotatkaEntity> lista_notatek = new ArrayList<>();
     private AdapterPodgladuNotatki mAdapter;
     private RecyclerView.LayoutManager layoutManager;
