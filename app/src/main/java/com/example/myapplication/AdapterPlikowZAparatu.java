@@ -107,13 +107,19 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         @Override
         public void onClick(View view) {
             try {
-                System.out.println(rv);
                 int itemPosition = rv.getChildLayoutPosition(view);
                 AparatEntity item = lista_plikow.get(itemPosition);
+                openWyswietlanie(item);
+
             }
             catch (Exception e){
                 System.out.println(e);
             }
+        }
+        public void openWyswietlanie(AparatEntity ne){
+            Intent intent = new Intent(context, WyswietlaniePliku.class);
+            intent.putExtra("path", ne.getPathPliku());
+            context.startActivity(intent);
         }
 
     }

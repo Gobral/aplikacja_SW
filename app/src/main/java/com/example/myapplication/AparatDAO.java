@@ -15,4 +15,7 @@ public interface AparatDAO {
 
     @Query("SELECT * FROM aparatentity WHERE notatkaId = :nazwa")
     LiveData<List<AparatEntity>> findPowiazane(String nazwa);
+
+    @Query("SELECT * FROM aparatentity WHERE  pathPliku = :path")
+    public AparatEntity loadAparatByPath(String path);
 }
