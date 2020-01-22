@@ -21,12 +21,10 @@ public final class DodanieAsyncTask  extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected Integer doInBackground(Void... params) {
-
+        /*
         NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
         try {
             notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test12", new Date(2020, 2,2, 18, 20), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test13", new Date(2020, 2,2, 5, 20), "lorem psum"));
-            notatkiDb.notatkiDAO().insertNatatka(new NotatkaEntity("test14", new Date(2020, 2,2, 12, 20), "lorem psum"));
         }
         catch (Exception e){
 
@@ -37,7 +35,9 @@ public final class DodanieAsyncTask  extends AsyncTask<Void, Void, Integer> {
         for(NotatkaEntity w: wszystkie){
             System.out.println(w.getNazwaNotatki() + " " + w.getDataDodania() + " " + w.getZawartosc());
         }
-        return wszystkie.size();
+
+         */
+        return 0;
     }
 
     @Override

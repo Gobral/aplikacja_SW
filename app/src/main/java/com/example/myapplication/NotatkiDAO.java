@@ -42,6 +42,4 @@ public interface NotatkiDAO {
     @Query("SELECT * FROM notatkaentity")
     LiveData<List<NotatkaEntity>> findAll();
 
-    @Query("UPDATE notatkaentity SET zawartosc=:nowa_zawartosc WHERE nazwaNotatki = :id")
-    public void updateZawartosc(String nowa_zawartosc, String id);
 }
