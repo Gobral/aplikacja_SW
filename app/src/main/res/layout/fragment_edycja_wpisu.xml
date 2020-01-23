@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/edycja_wpisu_layout"
+    tools:context=".EdycjaWpisuFragment">
+
+    <TextView
+        android:layout_width="200dp"
+        android:id="@+id/edycja_nazwa_wpisu"
+        android:layout_height="30dp"
+        android:text="Wczutuje"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:layout_toLeftOf="@id/edycja_wpisu_anuluj"
+        android:layout_margin="8dp"
+        android:id="@+id/edycja_wpisu_zapisz"
+        android:clickable="true"
+        android:text="Zapisz"
+        android:textColor="@color/colorAccent"
+        />
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:layout_alignParentRight="true"
+        android:layout_margin="8dp"
+        android:id="@+id/edycja_wpisu_anuluj"
+        android:clickable="true"
+        android:text="Anuluj"
+        android:textColor="@color/colorAccent"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/edycja_nazwa_wpisu"
+        android:background="@android:color/darker_gray"/>
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/plain_text_input"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:layout_below="@id/edycja_nazwa_wpisu"
+        android:hint="Tutaj możesz pisać."
+        android:inputType="textMultiLine|text"
+        android:singleLine="false" />
+
+</RelativeLayout>

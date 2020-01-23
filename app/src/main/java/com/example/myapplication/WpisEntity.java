@@ -11,25 +11,25 @@ import static androidx.room.ForeignKey.CASCADE;
 @Entity(foreignKeys = @ForeignKey(entity = NotatkaEntity.class,
         parentColumns = "nazwaNotatki",
         childColumns = "notatkaId",
-        onDelete = CASCADE))
+        onDelete = CASCADE),
+        primaryKeys = {"nazwaWpisu", "notatkaId"})
 public class WpisEntity {
     @NonNull
-    @PrimaryKey
-    private Long timeDodania;
+    private String nazwaWpisu;
     @NonNull
     private String notatkaId;
     @NonNull
     private String tresc;
 
-    public WpisEntity(Long timeDodania, String notatkaId, String tresc){
-        this.timeDodania = timeDodania;
+    public WpisEntity(String nazwaWpisu, String notatkaId, String tresc){
+        this.nazwaWpisu = nazwaWpisu;
         this.notatkaId = notatkaId;
         this.tresc = tresc;
     }
 
     @NonNull
-    public Long getTimeDodania() {
-        return timeDodania;
+    public String getNazwaWpisu() {
+        return nazwaWpisu;
     }
 
     @NonNull
@@ -41,8 +41,9 @@ public class WpisEntity {
     public String getNotatkaId() {
         return notatkaId;
     }
-    public void setTimeDodania(@NonNull Long timeDodania){
-        this.timeDodania = timeDodania;
+
+    public void setNazwaWpisu(@NonNull String nazwaWpisu) {
+        this.nazwaWpisu = nazwaWpisu;
     }
 
     public void setNotatkaId(@NonNull String notatkaId) {

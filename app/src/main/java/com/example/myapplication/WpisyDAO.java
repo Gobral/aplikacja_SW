@@ -17,7 +17,7 @@ public interface WpisyDAO {
     @Query("SELECT * FROM wpisentity WHERE notatkaId = :nazwa")
     LiveData<List<WpisEntity>> findPowiazane(String nazwa);
 
-    @Query("SELECT * FROM wpisentity WHERE timeDodania = :data")
-    public WpisEntity loadWpisByData(Long data);
+    @Query("SELECT * FROM wpisentity WHERE nazwaWpisu = :nazwa")
+    public WpisEntity loadWpisByData(String nazwa);
 
 }
