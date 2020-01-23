@@ -80,11 +80,15 @@ public class AdapterPodgladuWpisu  extends RecyclerView.Adapter< AdapterPodgladu
             }
         }
         public void openWpis(WpisEntity we){
-            System.out.println("Zamienianie");
+            //System.out.println("Zamienianie");
             //Fragment fragment = new EdycjaWpisuFragment(notatkaEntity, we);
             //AppCompatActivity aca = (AppCompatActivity) context;
             //FragmentTransaction transaction = aca.getSupportFragmentManager().beginTransaction();
             //transaction.replace(R.id.edycja_wpisu_layout, fragment).commit();
+            Intent intent = new Intent(context, EdycjaWpisuActivity.class);
+            intent.putExtra("nazwaWpisu", we.getNazwaWpisu());
+            intent.putExtra("nazwaNotatki", we.getNotatkaId());
+            context.startActivity(intent);
         }
     }
 }

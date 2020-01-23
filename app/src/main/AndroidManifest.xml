@@ -7,7 +7,7 @@
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -22,9 +22,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WyswietlaniePliku"></activity>
-        <activity android:name=".AparatActivity"
-            android:configChanges="keyboardHidden"/>
+        <activity android:name=".EdycjaWpisuActivity"></activity>
+        <activity android:name=".WyswietlaniePliku" />
+        <activity
+            android:name=".AparatActivity"
+            android:configChanges="keyboardHidden" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -39,8 +41,8 @@
 
         <activity
             android:name=".MapsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Notes2Activity"
             android:label="@string/title_activity_notes2"

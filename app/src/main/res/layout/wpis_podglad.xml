@@ -24,6 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Wczytywanie..."
+                android:maxLines="1"
+                android:minLines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#000"
                 android:layout_margin="3dp"/>
