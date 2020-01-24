@@ -57,7 +57,7 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
         Date d = lista_notatek.get(position).getDataDodania();
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
-        holder.textView_data.setText(cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + (cal.get(Calendar.YEAR) - 1900) + "  " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+        holder.textView_data.setText(cal.get(Calendar.DAY_OF_MONTH) + "-" + (cal.get(Calendar.MONTH)+1) + "-" + (cal.get(Calendar.YEAR) - 1900) + "  " + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
     }
 
     @Override

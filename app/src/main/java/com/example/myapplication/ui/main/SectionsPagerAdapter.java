@@ -41,7 +41,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new TextEditFragment(notatka);
                 break;
             case 1:
-                fragment = new NagraniaFragment();
+                fragment = new NagraniaFragment(notatka);
                 break;
             case 2:
                 fragment = new ZdjeciaFragment(notatka);

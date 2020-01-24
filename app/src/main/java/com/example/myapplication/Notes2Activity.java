@@ -1,9 +1,12 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -12,14 +15,19 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +37,16 @@ import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 public class Notes2Activity extends AppCompatActivity {
     private NotatkaEntity notatkaEntity;
     private String nazwaNotatki;
+    private MediaRecorder mediaRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +78,7 @@ public class Notes2Activity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = findViewById(R.id.fab);
         FloatingActionButton wpis_fab = findViewById(R.id.dodaj_wpis_fb);
+        FloatingActionButton nagranie_fab = findViewById(R.id.dodaj_glosowe_fb);
         wpis_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,6 +124,87 @@ public class Notes2Activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        nagranie_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = Notes2Activity.this;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                LayoutInflater li = LayoutInflater.from(Notes2Activity.this);
+                RelativeLayout relativeLayout = (RelativeLayout) li.inflate(R.layout.nagrywanie_dialog, null);
+
+                EditText input = relativeLayout.findViewById(R.id.dialog_relative_nazwa);
+
+                Calendar currentTime = Calendar.getInstance();
+                input.setText("Nagranie " + currentTime.get(currentTime.YEAR) + "-" + (currentTime.get(currentTime.MONTH) + 1) + "-" + currentTime.get(currentTime.DAY_OF_MONTH) + " " + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + ":" +  currentTime.get(currentTime.MINUTE) + ":" + currentTime.get(currentTime.SECOND));
+
+
+                TextView start = relativeLayout.findViewById(R.id.dialog_nagranie_start);
+                TextView stop = relativeLayout.findViewById(R.id.dialog_nagranie_stop);
+                TextView zapisz = relativeLayout.findViewById(R.id.dialog_nagranie_zapisz);
+
+
+                File path = getExternalCacheDir();
+                String nazwa_nagrania = "nagranie" + "_" + currentTime.get(currentTime.YEAR) + currentTime.get(currentTime.MONTH) + currentTime.get(currentTime.DAY_OF_MONTH) + "_" + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + currentTime.get(currentTime.MINUTE) + currentTime.get(currentTime.SECOND) + currentTime.get(currentTime.MILLISECOND) + ".3gp";
+                File nowe_nagranie = new File(path, nazwa_nagrania);
+
+                builder.setView(relativeLayout);
+                AlertDialog alertDialog = builder.create();
+                start.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        stop.setClickable(true);
+                        stop.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                        try {
+                            nowe_nagranie.createNewFile();
+                            System.out.println(nowe_nagranie.getAbsolutePath());
+                            mediaRecorder = new MediaRecorder();
+                            // Configure the input sources.
+                            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                            // Set the output format and encoder.
+                            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                            mediaRecorder.setOutputFile(nowe_nagranie.getPath());
+                            mediaRecorder.prepare();
+                            mediaRecorder.start();
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        start.setClickable(false);
+                        start.setTextColor(getResources().getColor(R.color.colorCzekania));
+                    }
+                });
+                stop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        stop.setClickable(false);
+                        stop.setTextColor(getResources().getColor(R.color.colorCzekania));
+
+                        mediaRecorder.stop();
+                        mediaRecorder.reset();
+                        mediaRecorder.release();
+
+                        zapisz.setClickable(true);
+                        zapisz.setTextColor(getResources().getColor(R.color.colorAccent));
+                    }
+                });
+
+                zapisz.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        alertDialog.dismiss();
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+
     }
 
     private class WczytajNotatke extends AsyncTask<Void, Void, NotatkaEntity> {

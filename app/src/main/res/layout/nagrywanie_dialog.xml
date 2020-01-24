@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:id="@+id/dialog_relative_layout">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Podaj nazwę nagrania"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#000"
+        android:layout_margin="8dp"
+        android:id="@+id/dialog_nagranie_tytul"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_nagranie_tytul"
+        android:id="@+id/dialog_relative_nazwa" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_margin="8dp"
+        android:text="Czas nagrywania:"
+        android:layout_below="@id/dialog_relative_nazwa"
+        android:id="@+id/dialog_nagranie_czas_text"
+        android:textColor="#000"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:layout_marginTop="8dp"
+        android:text="00:00"
+        android:layout_below="@id/dialog_relative_nazwa"
+        android:layout_toRightOf="@id/dialog_nagranie_czas_text"
+        android:id="@+id/dialog_nagranie_aktualnie_nagrano"
+        android:textColor="#000"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorAccent"
+        android:text="START"
+        android:layout_below="@id/dialog_nagranie_czas_text"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:id="@+id/dialog_nagranie_start"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorCzekania"
+        android:text="STOP"
+        android:layout_toRightOf="@id/dialog_nagranie_start"
+        android:layout_below="@id/dialog_nagranie_czas_text"
+        android:clickable="false"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:id="@+id/dialog_nagranie_stop"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorCzekania"
+        android:text="Zapisz"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/dialog_nagranie_czas_text"
+        android:clickable="false"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:id="@+id/dialog_nagranie_zapisz"/>
+
+
+</RelativeLayout>
