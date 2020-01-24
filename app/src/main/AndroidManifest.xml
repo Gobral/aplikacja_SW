@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EdycjaWpisuActivity"></activity>
+        <activity android:name=".WyswietlanieNewsaActivity"></activity>
+        <activity android:name=".EdycjaWpisuActivity" />
         <activity android:name=".WyswietlaniePliku" />
         <activity
             android:name=".AparatActivity"

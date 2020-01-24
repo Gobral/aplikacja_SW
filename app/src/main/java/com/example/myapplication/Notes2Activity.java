@@ -197,8 +197,14 @@ public class Notes2Activity extends AppCompatActivity {
                 zapisz.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        alertDialog.dismiss();
+                        String aktualne = input.getText().toString();
+                        if(aktualne.length() > 0 && !Character.isWhitespace(aktualne.charAt(0))) {
+                            new DodanieNagraniaAsyncTask(Notes2Activity.this, input.getText().toString(), nowe_nagranie).execute();
+                            alertDialog.dismiss();
+                        }
+                        else {
+                            Toast.makeText(Notes2Activity.this, "Podaj poprawną nazwę", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
                 alertDialog.show();
@@ -266,6 +272,49 @@ public class Notes2Activity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(WpisEntity notatkaEntity) {
+            Activity activity = weakActivity.get();
+            if(activity == null) {
+                return;
+            }
+            if(notatkaEntity == null){
+                Toast.makeText(activity, "Nazwa już istnieje", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+    private class DodanieNagraniaAsyncTask  extends AsyncTask<Void, Void, GlosoweEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private Context context;
+        private String nazwaNagrania;
+        private String file;
+
+        public DodanieNagraniaAsyncTask(Activity activity, String nazwaNagrania, File file) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.nazwaNagrania = nazwaNagrania;
+            this.file = file.getPath();
+        }
+
+        @Override
+        protected GlosoweEntity doInBackground(Void... params) {
+
+            GlosoweEntity glosoweEntity = null;
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            try {
+                glosoweEntity = new GlosoweEntity(nazwaNagrania, nazwaNotatki, file);
+                notatkiDb.glosoweDAO().insertNagranie(glosoweEntity);
+            }
+            catch (Exception e){
+                glosoweEntity = null;
+            }
+            return glosoweEntity;
+        }
+
+        @Override
+        protected void onPostExecute(GlosoweEntity notatkaEntity) {
             Activity activity = weakActivity.get();
             if(activity == null) {
                 return;

@@ -28,6 +28,7 @@
                 android:minLines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#000"
+                android:layout_toRightOf="@id/podglad_nagrania_ikonka"
                 android:layout_margin="3dp"/>
 
             <TextView
@@ -40,15 +41,17 @@
                 android:textColor="#444"
                 android:layout_marginBottom="6dp"
                 android:layout_marginLeft="3dp"
+                android:layout_toRightOf="@id/podglad_nagrania_ikonka"
                 android:layout_marginRight="3dp"/>
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ic_play_arrow_black_24dp"
-                android:tint="@color/colorAccent"/>
+                android:src="@drawable/ic_music_note_black_24dp"
+                android:tint="@color/colorAccent"
+                android:id="@+id/podglad_nagrania_ikonka"/>
 
         </RelativeLayout>
 
