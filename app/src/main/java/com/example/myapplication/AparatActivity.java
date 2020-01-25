@@ -80,8 +80,6 @@ public class AparatActivity extends AppCompatActivity {
         File path = getExternalCacheDir();
         nowePliki = new ArrayList<>();
 
-        System.out.println(notatkaEntity.getNazwaNotatki());
-
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -102,7 +100,6 @@ public class AparatActivity extends AppCompatActivity {
                 ostatni_plik = new File(path, nazwa);
                 try {
                     ostatni_plik.createNewFile();
-                    System.out.println(ostatni_plik.getAbsolutePath());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -157,7 +154,6 @@ public class AparatActivity extends AppCompatActivity {
                     ostatni_plik = new File(path, nazwa);
                     try {
                         ostatni_plik.createNewFile();
-                        System.out.println(ostatni_plik.getAbsolutePath());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

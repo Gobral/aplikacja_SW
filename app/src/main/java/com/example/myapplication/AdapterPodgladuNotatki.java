@@ -74,7 +74,6 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
         @Override
         public void onClick(View view) {
             try {
-                System.out.println(rv);
                 int itemPosition = rv.getChildLayoutPosition(view);
                 NotatkaEntity item = lista_notatek.get(itemPosition);
                 openNotes(item);

@@ -97,7 +97,6 @@ public class Notes2Activity extends AppCompatActivity {
                         String wpisano = input.getText().toString();
                         if(wpisano.length() > 0 && !Character.isWhitespace(wpisano.charAt(0))){
                             new Notes2Activity.DodanieAsyncTask(Notes2Activity.this, wpisano).execute();
-                            //new PodgladNotatek.DodanieAsyncTask(PodgladNotatek.this.getActivity() , wpisano).execute();
                         }
                         else{
                             Toast.makeText(Notes2Activity.this, "Podaj poprawną nazwę", Toast.LENGTH_LONG).show();
@@ -160,7 +159,6 @@ public class Notes2Activity extends AppCompatActivity {
 
                         try {
                             nowe_nagranie.createNewFile();
-                            System.out.println(nowe_nagranie.getAbsolutePath());
                             mediaRecorder = new MediaRecorder();
                             // Configure the input sources.
                             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);

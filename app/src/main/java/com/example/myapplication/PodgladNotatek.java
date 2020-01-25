@@ -152,7 +152,6 @@ public class PodgladNotatek extends Fragment {
             public void onChanged(@Nullable final List<NotatkaEntity> updatedNotatki) {
                 lista_notatek = updatedNotatki;
                 mAdapter.setData(lista_notatek);
-                System.out.println(lista_notatek.size());
             }
         };
 
@@ -181,8 +180,6 @@ public class PodgladNotatek extends Fragment {
             try {
                 Calendar data = Calendar.getInstance();
                 data.add(Calendar.YEAR, 1900);
-
-                System.out.println( location.getLatitude() + " " + location.getLongitude() + " " + location.getProvider());
 
                 notatkaEntity = new NotatkaEntity(nazwaNotatki, data.getTime() , location.getLatitude(), location.getLongitude(), true);
                 notatkiDb.notatkiDAO().insertNatatka(notatkaEntity);

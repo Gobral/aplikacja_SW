@@ -20,8 +20,6 @@ public class WyswietlanieNewsaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wyswietlanie_newsa);
 
         url_strony = "http://slaskwroclaw.pl" + url_strony;
-        System.out.println("EYYYYYYYYYYYYY");
-        System.out.println(url_strony);
 
         WebView webView = findViewById(R.id.widok_strony);
         webView.getSettings().setJavaScriptEnabled(true);

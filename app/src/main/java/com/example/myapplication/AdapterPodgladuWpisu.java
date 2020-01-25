@@ -80,7 +80,6 @@ public class AdapterPodgladuWpisu  extends RecyclerView.Adapter< AdapterPodgladu
             }
         }
         public void openWpis(WpisEntity we){
-            //System.out.println("Zamienianie");
             //Fragment fragment = new EdycjaWpisuFragment(notatkaEntity, we);
             //AppCompatActivity aca = (AppCompatActivity) context;
             //FragmentTransaction transaction = aca.getSupportFragmentManager().beginTransaction();

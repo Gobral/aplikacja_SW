@@ -56,7 +56,6 @@ public class WyswietlaniePliku extends AppCompatActivity {
             constraintLayout.addView(touchImageView);
         }
         else if(path.charAt(path.length() - 1) == '4') {
-            System.out.println(path);
             VideoView videoView = new VideoView(this);
             RelativeLayout.LayoutParams layoutParams =new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);

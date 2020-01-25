@@ -79,12 +79,10 @@ public class NewsFragment extends Fragment {
 
                 Elements data = doc.select("div.news-box");
                 int size = data.size();
-                Log.d("size", " " + size);
                 for (int i = 0; i < size; i++){
                     String imgUrl = data.select("div.news-box").select("img").eq(i).attr("src");
                     String title = data.select("h3.font-color-red").select("a").eq(i).text();
                     String wpisUrl = data.select("h3.font-color-red").select("a").eq(i).attr("href");
-                    Log.d("zapytanie", "artyk: " + title);
                     naglowki.add(new Wpis(wpisUrl, imgUrl, title));
                 }
             } catch (IOException e) {

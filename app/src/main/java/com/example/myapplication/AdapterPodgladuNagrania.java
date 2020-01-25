@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -175,6 +176,7 @@ public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgla
             nazwaPliku.setText(we.getNazwaNagrania());
 
             builder.setView(relativeLayout);
+            builder.setOnDismissListener((DialogInterface.OnDismissListener) dialog -> mPlayer.stop());
             AlertDialog alertDialog = builder.create();
 
             activity.runOnUiThread(new Runnable() {
