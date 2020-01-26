@@ -32,7 +32,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="70dp"/>
+            android:layout_marginTop="71dp"
+            android:id="@+id/parkingi_recucler"/>
+
     </RelativeLayout>
 
     <ImageButton
@@ -42,6 +44,24 @@
         android:src="@drawable/ic_list_black_24dp"
         android:tint="@color/colorAccent"
         android:id="@+id/parkingi_menu_button"/>
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:id="@+id/parkingi_center_button"
+        android:src="@drawable/ic_gps_fixed_black_24dp"
+        android:tint="@color/colorAccent"
+        android:background="?android:selectableItemBackground"/>
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/dodawanie_parkingow_fb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_black_24dp" />
 
 </RelativeLayout>
