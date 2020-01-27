@@ -29,6 +29,13 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#000"
                 android:layout_margin="3dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_below="@id/podglad_wpisu_nazwa"
+                android:background="@android:color/darker_gray"/>
 
             <TextView
                 android:id="@+id/podglad_wpisu_tresc"

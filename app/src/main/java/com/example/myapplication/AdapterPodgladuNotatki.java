@@ -1,7 +1,10 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +27,8 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
     public Context context;
     public RecyclerView rv;
     private final View.OnClickListener mOnClickListener = new MyOnClickListener();
+
+    private final View.OnLongClickListener mOnLongClickListener = new  MyOnLongClickListener();
 
 
     public static class MyViewHolderNotatka extends RecyclerView.ViewHolder {
@@ -47,6 +54,7 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.notatka_podglad_view, parent, false);
         v.setOnClickListener(mOnClickListener);
+        v.setOnLongClickListener(mOnLongClickListener);
         MyViewHolderNotatka vh = new MyViewHolderNotatka(v);
         return vh;
     }
@@ -87,5 +95,63 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
             intent.putExtra("nazwa", ne.getNazwaNotatki());
             context.startActivity(intent);
         }
+    }
+
+    private class MyOnLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View v) {
+
+            int itemPosition = rv.getChildLayoutPosition(v);
+            NotatkaEntity item = lista_notatek.get(itemPosition);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Usuń " + item.getNazwaNotatki());
+            alert.setMessage("Czy na pewno chcesz usunąć wybrany dziennik?");
+            alert.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // continue with delete
+                    new UsunAsyncTask((Activity) context, item).execute();
+
+                }
+            });
+            alert.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // close dialog
+                    dialog.cancel();
+                }
+            });
+            AlertDialog ad = alert.create();
+            ad.show();
+            return true;
+        }
+    }
+
+    private class UsunAsyncTask  extends AsyncTask<Void, Void, NotatkaEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private Context context;
+        private NotatkaEntity dziennik;
+
+        public UsunAsyncTask(Activity activity, NotatkaEntity dziennik) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.dziennik = dziennik;
+        }
+
+        @Override
+        protected NotatkaEntity doInBackground(Void... params) {
+
+            NotatkaEntity entity = dziennik;
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            try {
+                notatkiDb.notatkiDAO().deleteNotatka(dziennik);
+            }
+            catch (Exception e){
+                entity = null;
+            }
+            return entity;
+        }
+
     }
 }

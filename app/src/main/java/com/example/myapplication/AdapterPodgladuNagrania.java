@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgladuNagrania.MyViewHolderNagranie>{
@@ -27,6 +29,7 @@ public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgla
     private NotatkaEntity notatkaEntity;
     public RecyclerView rv;
     private final View.OnClickListener mOnClickListener = new AdapterPodgladuNagrania.MyOnClickListener();
+    private final View.OnLongClickListener mOnLongClickListener = new MyOnLongClickListener();
 
     public static class MyViewHolderNagranie extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -57,6 +60,7 @@ public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgla
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.nagranie_glosowe_podglad, parent, false);
         v.setOnClickListener(mOnClickListener);
+        v.setOnLongClickListener(mOnLongClickListener);
         AdapterPodgladuNagrania.MyViewHolderNagranie vh = new AdapterPodgladuNagrania.MyViewHolderNagranie(v);
         return vh;
     }
@@ -198,5 +202,62 @@ public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgla
             //intent.putExtra("nazwaNotatki", we.getNotatkaId());
             //context.startActivity(intent);
         }
+    }
+
+    private class MyOnLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View v) {
+
+            int itemPosition = rv.getChildLayoutPosition(v);
+            GlosoweEntity item = lista_nagran.get(itemPosition);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Usuń " + item.getNazwaNagrania());
+            alert.setMessage("Czy na pewno chcesz usunąć wybrane nagranie?");
+            alert.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // continue with delete
+                    new UsunAsyncTask((Activity) context, item).execute();
+                }
+            });
+            alert.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // close dialog
+                    dialog.cancel();
+                }
+            });
+            AlertDialog ad = alert.create();
+            ad.show();
+            return true;
+        }
+    }
+
+    private class UsunAsyncTask  extends AsyncTask<Void, Void, GlosoweEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private Context context;
+        private GlosoweEntity nagranie;
+
+        public UsunAsyncTask(Activity activity, GlosoweEntity nagranie) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.nagranie = nagranie;
+        }
+
+        @Override
+        protected GlosoweEntity doInBackground(Void... params) {
+
+            GlosoweEntity glosoweEntity = nagranie;
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            try {
+                notatkiDb.glosoweDAO().deleteNagranie(nagranie);
+            }
+            catch (Exception e){
+                glosoweEntity = null;
+            }
+            return glosoweEntity;
+        }
+
     }
 }

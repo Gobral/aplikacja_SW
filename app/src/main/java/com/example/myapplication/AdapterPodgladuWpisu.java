@@ -2,17 +2,21 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class AdapterPodgladuWpisu  extends RecyclerView.Adapter< AdapterPodgladuWpisu.MyViewHolderWpis> {
@@ -22,6 +26,7 @@ public class AdapterPodgladuWpisu  extends RecyclerView.Adapter< AdapterPodgladu
     private NotatkaEntity notatkaEntity;
     public RecyclerView rv;
     private final View.OnClickListener mOnClickListener = new MyOnClickListener();
+    private final View.OnLongClickListener mOnLongClickListener = new MyOnLongClickListener();
 
     public static class MyViewHolderWpis extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -52,6 +57,7 @@ public class AdapterPodgladuWpisu  extends RecyclerView.Adapter< AdapterPodgladu
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.wpis_podglad, parent, false);
         v.setOnClickListener(mOnClickListener);
+        v.setOnLongClickListener(mOnLongClickListener);
         MyViewHolderWpis vh = new MyViewHolderWpis(v);
         return vh;
     }
@@ -89,5 +95,63 @@ public class AdapterPodgladuWpisu  extends RecyclerView.Adapter< AdapterPodgladu
             intent.putExtra("nazwaNotatki", we.getNotatkaId());
             context.startActivity(intent);
         }
+    }
+
+    private class MyOnLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View v) {
+
+            int itemPosition = rv.getChildLayoutPosition(v);
+            WpisEntity item = lista_wpiso.get(itemPosition);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Usuń " + item.getNazwaWpisu());
+            alert.setMessage("Czy na pewno chcesz usunąć wybrany wpis?");
+            alert.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // continue with delete
+                    new UsunAsyncTask((Activity) context, item).execute();
+
+                }
+            });
+            alert.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // close dialog
+                    dialog.cancel();
+                }
+            });
+            AlertDialog ad = alert.create();
+            ad.show();
+            return true;
+        }
+    }
+
+    private class UsunAsyncTask  extends AsyncTask<Void, Void, WpisEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private Context context;
+        private WpisEntity wpis;
+
+        public UsunAsyncTask(Activity activity, WpisEntity wpis) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.wpis = wpis;
+        }
+
+        @Override
+        protected WpisEntity doInBackground(Void... params) {
+
+            WpisEntity entity = wpis;
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            try {
+                notatkiDb.wpisyDAO().deleteWpis(wpis);
+            }
+            catch (Exception e){
+                entity = null;
+            }
+            return entity;
+        }
+
     }
 }

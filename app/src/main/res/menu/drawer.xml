@@ -10,11 +10,11 @@
         <item
             android:id="@+id/nav_tables"
             android:icon="@drawable/ic_grid_on_black_24dp"
-            android:title="Statystyki" />
+            android:title="Statystyki klubu" />
         <item
             android:id="@+id/nav_notes"
             android:icon="@drawable/ic_create_black_24dp"
-            android:title="Notes" />
+            android:title="Dziennik" />
         <item
             android:id="@+id/nav_maps"
             android:icon="@drawable/ic_map_black_24dp"

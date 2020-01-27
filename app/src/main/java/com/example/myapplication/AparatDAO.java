@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -18,4 +19,7 @@ public interface AparatDAO {
 
     @Query("SELECT * FROM aparatentity WHERE  pathPliku = :path")
     public AparatEntity loadAparatByPath(String path);
+
+    @Delete
+    public void deleteAparat(AparatEntity aparatEntity);
 }

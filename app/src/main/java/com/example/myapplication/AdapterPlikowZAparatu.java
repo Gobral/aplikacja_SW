@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +15,13 @@ import android.widget.LinearLayout;
 
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAparatu.MyViewHolderNotatka> {
@@ -27,6 +31,8 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
     public Context context;
     public RecyclerView rv;
     private final View.OnClickListener mOnClickListener = new MyOnClickListener();
+    private final View.OnLongClickListener mOnLongClickListener = new MyOnLongClickListener();
+
 
     @NonNull
     @Override
@@ -34,6 +40,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.plik_z_aparatu_podglad    , parent, false);
         v.setOnClickListener(mOnClickListener);
+        v.setOnLongClickListener(mOnLongClickListener);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int wielkosc = displayMetrics.widthPixels / 2;
@@ -120,6 +127,67 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
             Intent intent = new Intent(context, WyswietlaniePliku.class);
             intent.putExtra("path", ne.getPathPliku());
             context.startActivity(intent);
+        }
+
+    }
+
+    private class MyOnLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View v) {
+
+            int itemPosition = rv.getChildLayoutPosition(v);
+            AparatEntity item = lista_plikow.get(itemPosition);
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Usuń plik");
+            alert.setMessage("Czy na pewno chcesz usunąć wybrany plik?");
+            alert.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // continue with delete
+                    String path = item.getPathPliku();
+                    new UsunAsyncTask((Activity) context, item).execute();
+                    File file = new File(path);
+                    file.delete();
+                    notifyItemRemoved(itemPosition);
+                }
+            });
+            alert.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // close dialog
+                    dialog.cancel();
+                }
+            });
+            AlertDialog ad = alert.create();
+            ad.show();
+            return true;
+        }
+    }
+
+    private class UsunAsyncTask  extends AsyncTask<Void, Void, AparatEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private Context context;
+        private AparatEntity plik;
+
+        public UsunAsyncTask(Activity activity, AparatEntity plik) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.plik = plik;
+        }
+
+        @Override
+        protected AparatEntity doInBackground(Void... params) {
+
+            AparatEntity aparatEntity = plik;
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            try {
+                notatkiDb.aparatDAO().deleteAparat(plik);
+            }
+            catch (Exception e) {
+                aparatEntity = null;
+            }
+            return aparatEntity;
         }
 
     }

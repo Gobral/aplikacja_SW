@@ -54,16 +54,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
     private LocationRequest mLocationRequest;
     private Location location;
     private Marker user;
+    private Marker nowy;
     private AdapterPodgladuParkingu mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ImageButton blokada;
     private List<ParkingEntity> lista_parkingow = new ArrayList<>();
+    private List<Marker> markery = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final Observer<List<ParkingEntity>> notatkaObserver = new Observer<List<ParkingEntity>>() {
             @Override
             public void onChanged(@Nullable final List<ParkingEntity> updatedParkingi) {
+                for(Marker m: markery){
+                    m.remove();
+                }
                 lista_parkingow = updatedParkingi;
                 mAdapter.setData(lista_parkingow);
+
+                for(ParkingEntity parkingEntity: lista_parkingow){
+                    markery.add(mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(parkingEntity.getLattitude(), parkingEntity.getLongitude()))
+                            .title(parkingEntity.getNazwaParkingu())));
+                }
+
             }
         };
 
@@ -86,6 +98,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        View mapView = mapFragment.getView();
+        View compassButton = mapView.findViewWithTag("GoogleMapCompass");
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_END);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_START,0);
+        rlp.topMargin = 150;
+        rlp.rightMargin = 35;
 
         ImageButton imageButton = findViewById(R.id.parkingi_menu_button);
         RelativeLayout menu = findViewById(R.id.parkingi_menu);
@@ -100,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         layoutManager = new LinearLayoutManager(menu.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new AdapterPodgladuParkingu(lista_parkingow, recyclerView, this);
+        mAdapter = new AdapterPodgladuParkingu(lista_parkingow, recyclerView, this, mMap);
         recyclerView.setAdapter(mAdapter);
 
         blokada.setOnClickListener(new View.OnClickListener() {
@@ -232,11 +253,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String wpisano = input.getText().toString();
-                        if(wpisano.length() > 0 && !Character.isWhitespace(wpisano.charAt(0))){
-                            new MapsActivity.DodanieAsyncTask(MapsActivity.this , wpisano).execute();
+                        if(wpisano.length() > 0 && !Character.isWhitespace(wpisano.charAt(0)) && nowy != null){
+                            new DodanieAsyncTask(MapsActivity.this , wpisano, nowy.getPosition()).execute();
+                            nowy.remove();
+                            nowy = null;
                         }
                         else{
-                            Toast.makeText(MapsActivity.this, "Podaj poprawną nazwę", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MapsActivity.this, "Podaj poprawną nazwę i zaznacz parking na mapie", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -250,11 +273,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 builder.show();
             }
         });
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapLongClickListener(this);
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(51.11, 17.022222);
@@ -265,10 +290,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+        mAdapter.setMapa(mMap);
 
         user = mMap.addMarker(new MarkerOptions()
                 .position(sydney)
                 .title("Tu jesteś").icon(BitmapDescriptorFactory.fromResource(R.drawable.user25)));
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        if(nowy == null){
+            nowy = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title("Kliknij + aby dodać nowy parking")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        }
+        else {
+            nowy.setPosition(latLng);
+        }
+
     }
 
     private class DodanieAsyncTask  extends AsyncTask<Void, Void, ParkingEntity> {
@@ -276,11 +316,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         private WeakReference<Activity> weakActivity;
         private Context context;
         private String nazwaParkingu;
+        private LatLng latLng;
 
-        public DodanieAsyncTask(Activity activity, String nazwaParkingu) {
+        public DodanieAsyncTask(Activity activity, String nazwaParkingu, LatLng latLng) {
             weakActivity = new WeakReference<>(activity);
             this.context = activity.getApplicationContext();
             this.nazwaParkingu = nazwaParkingu;
+            this.latLng = latLng;
         }
 
         @Override
@@ -290,10 +332,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
             try {
-                Calendar data = Calendar.getInstance();
-                data.add(Calendar.YEAR, 1900);
-
-                parkingEntity = new ParkingEntity(nazwaParkingu, location.getLatitude(), location.getLongitude());
+                parkingEntity = new ParkingEntity(nazwaParkingu, latLng.latitude, latLng.longitude);
                 notatkiDb.parkingDAO().insertParking(parkingEntity);
             }
             catch (Exception e){

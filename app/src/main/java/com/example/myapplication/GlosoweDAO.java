@@ -3,6 +3,7 @@ package com.example.myapplication;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -23,4 +24,7 @@ public interface GlosoweDAO {
 
     @Query("SELECT * FROM glosoweentity WHERE nazwaNagrania = :nazwaGlosowej AND notatkaId = :nazwaNotatki")
     public GlosoweEntity loadGlosoweByNazwy(String nazwaGlosowej, String nazwaNotatki);
+
+    @Delete
+    public void deleteNagranie(GlosoweEntity glosoweEntity);
 }
