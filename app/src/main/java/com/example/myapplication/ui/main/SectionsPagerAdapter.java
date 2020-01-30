@@ -12,6 +12,7 @@ import com.example.myapplication.NagraniaFragment;
 import com.example.myapplication.NotatkaEntity;
 import com.example.myapplication.R;
 import com.example.myapplication.TextEditFragment;
+import com.example.myapplication.WideoFragment;
 import com.example.myapplication.ZdjeciaFragment;
 
 /**
@@ -21,7 +22,7 @@ import com.example.myapplication.ZdjeciaFragment;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3, R.string.tab_text_4};
     private final Context mContext;
     private NotatkaEntity notatka;
 
@@ -46,6 +47,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 fragment = new ZdjeciaFragment(notatka);
                 break;
+            case 3:
+                fragment = new WideoFragment();
+                break;
             default:
                 fragment = null;
 
@@ -63,6 +67,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 2 total pages.
-        return 3;
+        return 4;
     }
 }

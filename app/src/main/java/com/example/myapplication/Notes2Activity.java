@@ -64,12 +64,7 @@ public class Notes2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_notes2);
 
         TextView tv = findViewById(R.id.title);
-        if(nazwaNotatki.length() > 12){
-            tv.setText(nazwaNotatki.substring(0,10) + "... - Edycja");
-        }
-        else{
-            tv.setText(nazwaNotatki + " - Edycja");
-        }
+        tv.setText(nazwaNotatki);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), notatkaEntity);
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -89,6 +84,9 @@ public class Notes2Activity extends AppCompatActivity {
                 final EditText input = new EditText(context);
 
                 input.setInputType(InputType.TYPE_CLASS_TEXT );
+                Calendar currentTime = Calendar.getInstance();
+                input.setText("Wpis " + currentTime.get(currentTime.YEAR) + "-" + (currentTime.get(currentTime.MONTH) + 1) + "-" + currentTime.get(currentTime.DAY_OF_MONTH) + " " + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + ":" +  currentTime.get(currentTime.MINUTE) + ":" + currentTime.get(currentTime.SECOND));
                 builder.setView(input);
 
                 builder.setPositiveButton("Zatwierdź", new DialogInterface.OnClickListener() {

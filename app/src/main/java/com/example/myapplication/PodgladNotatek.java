@@ -81,6 +81,9 @@ public class PodgladNotatek extends Fragment {
                 final EditText input = new EditText(context);
 
                 input.setInputType(InputType.TYPE_CLASS_TEXT );
+                Calendar currentTime = Calendar.getInstance();
+                input.setText("Dziennik " + currentTime.get(currentTime.YEAR) + "-" + (currentTime.get(currentTime.MONTH) + 1) + "-" + currentTime.get(currentTime.DAY_OF_MONTH) + " " + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + ":" +  currentTime.get(currentTime.MINUTE) + ":" + currentTime.get(currentTime.SECOND));
                 builder.setView(input);
 
                 builder.setPositiveButton("Zatwierdź", new DialogInterface.OnClickListener() {
