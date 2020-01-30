@@ -16,6 +16,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -66,6 +67,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageButton blokada;
     private List<ParkingEntity> lista_parkingow = new ArrayList<>();
     private List<Marker> markery = new ArrayList<>();
+    private List<Marker> dzienniki = new ArrayList<>();
+    private List<NotatkaEntity> notatki = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,12 +277,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        final Observer<List<NotatkaEntity>> notatkaMapObserver = new Observer<List<NotatkaEntity>>() {
+            @Override
+            public void onChanged(@Nullable final List<NotatkaEntity> updatedNotatki) {
+                notatki = updatedNotatki;
+                for(Marker d: dzienniki){
+                    d.remove();
+                }
+                for(NotatkaEntity n: updatedNotatki){
+                    dzienniki.add(mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(n.getLattitude(), n.getLongitude()))
+                            .title(n.getNazwaNotatki())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
+                }
+            }
+        };
+
+        LiveData notatkiMapsLiveData = NotatkaDatabaseAccessor.getInstance(this.getApplicationContext()).notatkiDAO().findAll();
+        notatkiMapsLiveData.observe(this, notatkaMapObserver);
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapLongClickListener(this);
+
+       mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+            @Override
+            public void onInfoWindowClick(Marker arg0) {
+                System.out.println("Klik");
+                if(dzienniki.contains(arg0)){
+                    Intent intent = new Intent(MapsActivity.this, Notes2Activity.class);
+                    intent.putExtra("nazwa", arg0.getTitle());
+                    MapsActivity.this.startActivity(intent);
+                }
+
+            }
+        });
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(51.11, 17.022222);
@@ -295,6 +331,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         user = mMap.addMarker(new MarkerOptions()
                 .position(sydney)
                 .title("Tu jesteś").icon(BitmapDescriptorFactory.fromResource(R.drawable.user25)));
+
+
+        /*
+        for(Marker d: dzienniki){
+            d.remove();
+        }
+        for(NotatkaEntity n: notatki){
+            System.out.println("DODAJE " + n.getLattitude() + n.getLongitude());
+            dzienniki.add(mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(n.getLattitude(), n.getLongitude()))
+                    .title(n.getNazwaNotatki())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
+        }
+         */
     }
 
     @Override
