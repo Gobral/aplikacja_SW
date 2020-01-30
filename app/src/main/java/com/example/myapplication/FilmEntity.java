@@ -7,23 +7,25 @@ import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 
+
 @Entity(foreignKeys = @ForeignKey(entity = NotatkaEntity.class,
         parentColumns = "nazwaNotatki",
         childColumns = "notatkaId",
         onDelete = CASCADE))
-public class AparatEntity{
+public class FilmEntity {
+
     @NonNull
     @PrimaryKey
     private String pathPliku;
     @NonNull
     private String notatkaId;
     @NonNull
-    private String nazwaZdjecia;
+    private String nazwaFilmud;
 
-    public AparatEntity(String pathPliku, String notatkaId, String nazwaZdjecia){
+    public FilmEntity(String pathPliku, String notatkaId, String nazwaFilmud){
         this.pathPliku = pathPliku;
         this.notatkaId = notatkaId;
-        this.nazwaZdjecia = nazwaZdjecia;
+        this.nazwaFilmud = nazwaFilmud;
     }
 
     @NonNull
@@ -37,8 +39,8 @@ public class AparatEntity{
     }
 
     @NonNull
-    public String getNazwaZdjecia() {
-        return nazwaZdjecia;
+    public String getNazwaFilmud() {
+        return nazwaFilmud;
     }
 
     public void setNotatkaId(@NonNull String notatkaId) {
@@ -49,7 +51,7 @@ public class AparatEntity{
         this.pathPliku = pathPliku;
     }
 
-    public void setNazwaZdjecia(@NonNull String nazwaZdjecia) {
-        this.nazwaZdjecia = nazwaZdjecia;
+    public void setNazwaFilmud(@NonNull String nazwaFilmud) {
+        this.nazwaFilmud = nazwaFilmud;
     }
 }

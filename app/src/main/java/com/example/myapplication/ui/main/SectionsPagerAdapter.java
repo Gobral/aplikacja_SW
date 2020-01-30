@@ -48,7 +48,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 fragment = new ZdjeciaFragment(notatka);
                 break;
             case 3:
-                fragment = new WideoFragment();
+                fragment = new WideoFragment(notatka);
                 break;
             default:
                 fragment = null;

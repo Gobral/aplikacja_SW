@@ -25,10 +25,10 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAparatu.MyViewHolderNotatka> {
+public class AdapterPodgladuFilmu extends RecyclerView.Adapter<AdapterPodgladuFilmu.MyViewHolderNotatka> {
 
     public String SCHEME_VIDEO="video";
-    public List<AparatEntity> lista_plikow;
+    public List<FilmEntity> lista_plikow;
     public Context context;
     public RecyclerView rv;
     private final View.OnClickListener mOnClickListener = new MyOnClickListener();
@@ -39,7 +39,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
     @Override
     public MyViewHolderNotatka onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.plik_z_aparatu_podglad    , parent, false);
+                .inflate(R.layout.podglad_filmu    , parent, false);
         v.setOnClickListener(mOnClickListener);
         v.setOnLongClickListener(mOnLongClickListener);
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -65,7 +65,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         else{
             Picasso.get().load(plik).resize(400, 400).into(holder.imageView_miniaturka);
         }
-        holder.nazwaPliku.setText(lista_plikow.get(position).getNazwaZdjecia());
+        holder.nazwaPliku.setText(lista_plikow.get(position).getNazwaFilmud());
 
 
     }
@@ -85,7 +85,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         return position;
     }
 
-    public void setData(List<AparatEntity> newData) {
+    public void setData(List<FilmEntity> newData) {
         this.lista_plikow = newData;
         notifyDataSetChanged();
     }
@@ -103,7 +103,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         }
     }
 
-    public AdapterPlikowZAparatu(List lista_plikow, RecyclerView rv, Context context) {
+    public AdapterPodgladuFilmu(List lista_plikow, RecyclerView rv, Context context) {
         this.lista_plikow = lista_plikow;
         this.context = context;
         this.rv = rv;
@@ -116,7 +116,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         public void onClick(View view) {
             try {
                 int itemPosition = rv.getChildLayoutPosition(view);
-                AparatEntity item = lista_plikow.get(itemPosition);
+                FilmEntity item = lista_plikow.get(itemPosition);
                 openWyswietlanie(item);
 
             }
@@ -124,7 +124,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
                 System.out.println(e);
             }
         }
-        public void openWyswietlanie(AparatEntity ne){
+        public void openWyswietlanie(FilmEntity ne){
             Intent intent = new Intent(context, WyswietlaniePliku.class);
             intent.putExtra("path", ne.getPathPliku());
             context.startActivity(intent);
@@ -137,7 +137,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         public boolean onLongClick(View v) {
 
             int itemPosition = rv.getChildLayoutPosition(v);
-            AparatEntity item = lista_plikow.get(itemPosition);
+            FilmEntity item = lista_plikow.get(itemPosition);
 
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle("Usuń plik");
@@ -164,26 +164,26 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
         }
     }
 
-    private class UsunAsyncTask  extends AsyncTask<Void, Void, AparatEntity> {
+    private class UsunAsyncTask  extends AsyncTask<Void, Void, FilmEntity> {
 
         private WeakReference<Activity> weakActivity;
         private Context context;
-        private AparatEntity plik;
+        private FilmEntity plik;
 
-        public UsunAsyncTask(Activity activity, AparatEntity plik) {
+        public UsunAsyncTask(Activity activity, FilmEntity plik) {
             weakActivity = new WeakReference<>(activity);
             this.context = activity.getApplicationContext();
             this.plik = plik;
         }
 
         @Override
-        protected AparatEntity doInBackground(Void... params) {
+        protected FilmEntity doInBackground(Void... params) {
 
-            AparatEntity aparatEntity = plik;
+            FilmEntity aparatEntity = plik;
 
             NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
             try {
-                notatkiDb.aparatDAO().deleteAparat(plik);
+                notatkiDb.filmDAO().deleteAparat(plik);
             }
             catch (Exception e) {
                 aparatEntity = null;

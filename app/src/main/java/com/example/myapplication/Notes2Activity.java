@@ -74,6 +74,7 @@ public class Notes2Activity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         FloatingActionButton wpis_fab = findViewById(R.id.dodaj_wpis_fb);
         FloatingActionButton nagranie_fab = findViewById(R.id.dodaj_glosowe_fb);
+        FloatingActionButton fimy_fab = findViewById(R.id.dodaj_video_fb);
         wpis_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,12 +116,91 @@ public class Notes2Activity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                Intent intent = new Intent(Notes2Activity.this, AparatActivity.class);
-                intent.putExtra("nazwa", notatkaEntity.getNazwaNotatki());
-                startActivity(intent);
+
+                Context context = Notes2Activity.this;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Podaj nazwę zdjęcia");
+
+                final EditText input = new EditText(context);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT );
+                Calendar currentTime = Calendar.getInstance();
+                input.setText("Zdjęcie " + currentTime.get(currentTime.YEAR) + "-" + (currentTime.get(currentTime.MONTH) + 1) + "-" + currentTime.get(currentTime.DAY_OF_MONTH) + " " + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + ":" +  currentTime.get(currentTime.MINUTE) + ":" + currentTime.get(currentTime.SECOND));
+                builder.setView(input);
+
+                builder.setPositiveButton("Zatwierdź", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String wpisano = input.getText().toString();
+                        if(wpisano.length() > 0 && !Character.isWhitespace(wpisano.charAt(0))){
+
+                            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            Intent intent = new Intent(Notes2Activity.this, AparatActivity.class);
+                            intent.putExtra("nazwa", notatkaEntity.getNazwaNotatki());
+                            intent.putExtra("zdjecie", wpisano);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(Notes2Activity.this, "Podaj poprawną nazwę", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
+
+        fimy_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Context context = Notes2Activity.this;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Podaj nazwę filmu");
+
+                final EditText input = new EditText(context);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT );
+                Calendar currentTime = Calendar.getInstance();
+                input.setText("Film " + currentTime.get(currentTime.YEAR) + "-" + (currentTime.get(currentTime.MONTH) + 1) + "-" + currentTime.get(currentTime.DAY_OF_MONTH) + " " + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + ":" +  currentTime.get(currentTime.MINUTE) + ":" + currentTime.get(currentTime.SECOND));
+                builder.setView(input);
+
+                builder.setPositiveButton("Zatwierdź", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String wpisano = input.getText().toString();
+                        if(wpisano.length() > 0 && !Character.isWhitespace(wpisano.charAt(0))){
+
+                            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            Intent intent = new Intent(Notes2Activity.this, FilmActivity.class);
+                            intent.putExtra("nazwa", notatkaEntity.getNazwaNotatki());
+                            intent.putExtra("film", wpisano);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(Notes2Activity.this, "Podaj poprawną nazwę", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
         nagranie_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

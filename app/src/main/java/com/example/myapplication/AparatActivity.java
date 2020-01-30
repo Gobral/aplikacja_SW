@@ -51,6 +51,7 @@ public class AparatActivity extends AppCompatActivity {
     };
     private NotatkaEntity notatkaEntity;
     private String nazwaNotatki;
+    private String nazwaZdjecia;
     private File ostatni_plik;
     private List<File> nowePliki;
 
@@ -60,6 +61,7 @@ public class AparatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
         nazwaNotatki = b.getString("nazwa");
+        nazwaZdjecia = b.getString("zdjecie");
         try {
             notatkaEntity = new WczytajNotatke(this, nazwaNotatki).execute().get();
         } catch (ExecutionException e) {
@@ -76,7 +78,6 @@ public class AparatActivity extends AppCompatActivity {
         camera.setLifecycleOwner(this);
 
         FloatingActionButton fbzdjecie = findViewById(R.id.fbzdjecie);
-        FloatingActionButton fbfilm = findViewById(R.id.fbvideo);
         File path = getExternalCacheDir();
         nowePliki = new ArrayList<>();
 
@@ -109,23 +110,18 @@ public class AparatActivity extends AppCompatActivity {
 
                     }
                 });
-                fbfilm.setVisibility(FloatingActionButton.VISIBLE);
                 fbzdjecie.setVisibility(FloatingActionButton.VISIBLE);
 
                 File kopiaPliku = new File(ostatni_plik.getPath());
                 new DodajPlikZAparatu(AparatActivity.this, kopiaPliku, nazwaNotatki).execute();
                 nowePliki.add(kopiaPliku);
+                AparatActivity.this.finish();
 
             }
 
             @Override
             public void onVideoTaken(VideoResult result) {
-                fbfilm.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorCzekania)));
                 fbzdjecie.setVisibility(FloatingActionButton.VISIBLE);
-
-                File kopiaPliku = new File(ostatni_plik.getPath());
-                new DodajPlikZAparatu(AparatActivity.this, kopiaPliku, nazwaNotatki).execute();
-                nowePliki.add(kopiaPliku);
             }
 
             // And much more
@@ -136,31 +132,8 @@ public class AparatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!camera.isTakingVideo() && !camera.isTakingPicture()){
                     camera.setMode(Mode.PICTURE);
-                    fbfilm.setVisibility(FloatingActionButton.INVISIBLE);
                     fbzdjecie.setVisibility(FloatingActionButton.INVISIBLE);
                     camera.takePicture();
-                }
-            }
-        });
-        fbfilm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!camera.isTakingVideo() && !camera.isTakingPicture()){
-                    camera.setMode(Mode.VIDEO);
-                    fbfilm.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    fbzdjecie.setVisibility(FloatingActionButton.INVISIBLE);
-                    String nazwa = generujNazwe("mp4", "film");
-
-                    ostatni_plik = new File(path, nazwa);
-                    try {
-                        ostatni_plik.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    camera.takeVideo(ostatni_plik);
-                }
-                else if(camera.isTakingVideo()) {
-                    camera.stopVideo();
                 }
             }
         });
@@ -171,22 +144,18 @@ public class AparatActivity extends AppCompatActivity {
                         switch(orientation){
                             case ROTATION_O:
                                 //rotate as on portrait
-                                fbfilm.animate().rotation(0).setDuration(500).start();
                                 fbzdjecie.animate().rotation(0).setDuration(500).start();
                                 break;
                             case ROTATION_90:
                                 //rotate as left on top
-                                fbfilm.animate().rotation(-90).setDuration(500).start();
                                 fbzdjecie.animate().rotation(-90).setDuration(500).start();
                                 break;
                             case ROTATION_270:
                                 //rotate as right on top
-                                fbfilm.animate().rotation(90).setDuration(500).start();
                                 fbzdjecie.animate().rotation(90).setDuration(500).start();
                                 break;
                             case ROTATION_180:
                                 //rotate as upside down
-                                fbfilm.animate().rotation(180).setDuration(500).start();
                                 fbzdjecie.animate().rotation(180).setDuration(500).start();
                                 break;
 
@@ -243,7 +212,7 @@ public class AparatActivity extends AppCompatActivity {
 
             NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
             try {
-                notatkiDb.aparatDAO().insertZdjecie(new AparatEntity(path, nazwa));
+                notatkiDb.aparatDAO().insertZdjecie(new AparatEntity(path, nazwa, nazwaZdjecia));
             }
             catch (Exception e){
 
