@@ -67,7 +67,8 @@ public class TextEditFragment extends Fragment {
             }
         };
 
-        LiveData wpisyiLiveData = NotatkaDatabaseAccessor.getInstance(getActivity().getApplicationContext()).wpisyDAO().findPowiazane(notatkaEntity.getNazwaNotatki());
+        LiveData wpisyiLiveData = NotatkaDatabaseAccessor.getInstance(getActivity().getApplicationContext())
+                .wpisyDAO().findPowiazane(notatkaEntity.getNazwaNotatki());
         wpisyiLiveData.observe(this, plikiObserver);
     }
 

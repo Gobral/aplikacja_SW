@@ -7,11 +7,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import android.widget.LinearLayout;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -32,7 +29,7 @@ import java.util.ArrayList;
 public class NewsFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ArrayList<Wpis> naglowki = new ArrayList<>();;
+    private ArrayList<NewsClass> naglowki = new ArrayList<>();;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     @Nullable
@@ -48,7 +45,7 @@ public class NewsFragment extends Fragment {
         layoutManager = new LinearLayoutManager(lwew.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new MyAdapter(naglowki, getContext());
+        mAdapter = new AdapterNewsow(naglowki, getContext());
         recyclerView.setAdapter(mAdapter);
 
         return rootView;
@@ -57,13 +54,21 @@ public class NewsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Content content = new Content();
-        content.execute();
+        for (int i = 1; i < 20; i++){
+            Content content = new Content(i);
+            content.execute();
+        }
     }
 
 
 
     private class Content extends AsyncTask<Void,Void,Void> {
+
+        int strona;
+
+        public Content(int strona){
+            this.strona = strona;
+        }
 
         @Override
         protected void onPostExecute(Void aVoid) {
@@ -73,7 +78,8 @@ public class NewsFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String url = "http://slaskwroclaw.pl/strona/articles/index/1";
+
+            String url = "http://slaskwroclaw.pl/strona/articles/index/" + strona;
             try {
                 Document doc = Jsoup.connect(url).get();
 
@@ -83,7 +89,7 @@ public class NewsFragment extends Fragment {
                     String imgUrl = data.select("div.news-box").select("img").eq(i).attr("src");
                     String title = data.select("h3.font-color-red").select("a").eq(i).text();
                     String wpisUrl = data.select("h3.font-color-red").select("a").eq(i).attr("href");
-                    naglowki.add(new Wpis(wpisUrl, imgUrl, title));
+                    naglowki.add(new NewsClass(wpisUrl, imgUrl, title));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

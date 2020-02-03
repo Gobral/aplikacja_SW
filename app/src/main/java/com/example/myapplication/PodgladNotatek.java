@@ -76,7 +76,7 @@ public class PodgladNotatek extends Fragment {
             public void onClick(View v) {
                 Context context = PodgladNotatek.this.getContext();
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Podaj nazwę notatki");
+                builder.setTitle("Podaj nazwę dziennika");
 
                 final EditText input = new EditText(context);
 

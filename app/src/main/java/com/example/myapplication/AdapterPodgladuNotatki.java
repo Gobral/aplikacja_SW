@@ -90,9 +90,9 @@ public class AdapterPodgladuNotatki  extends RecyclerView.Adapter< AdapterPodgla
                 System.out.println(e);
             }
         }
-        public void openNotes(NotatkaEntity ne){
+        void openNotes(NotatkaEntity dziennik){
             Intent intent = new Intent(context, Notes2Activity.class);
-            intent.putExtra("nazwa", ne.getNazwaNotatki());
+            intent.putExtra("nazwa", dziennik.getNazwaNotatki());
             context.startActivity(intent);
         }
     }

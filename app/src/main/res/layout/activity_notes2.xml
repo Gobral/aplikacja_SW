@@ -36,6 +36,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/dodaj_wpis_fb"
         android:layout_width="wrap_content"
@@ -76,6 +77,17 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="214dp"
         android:src="@drawable/ic_video_call_black_24dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_gps_not_fixed_black_24dp"
+        android:id="@+id/lokalizacja_update_fb"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="280dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -90,7 +90,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .position(new LatLng(parkingEntity.getLattitude(), parkingEntity.getLongitude()))
                             .title(parkingEntity.getNazwaParkingu())));
                 }
-
             }
         };
 
@@ -217,15 +216,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 location = new Location(locationResult.getLastLocation());
-                if (location != null) {
-                    if (mMap != null) {
-                        LatLng latLng = new LatLng(location.getLatitude(),
-                                location.getLongitude());
+                if (mMap != null) {
+                    LatLng latLng = new LatLng(location.getLatitude(),
+                            location.getLongitude());
 
-                        user.setPosition(latLng);
-                        if(blokada.getTag().toString().equals("fixed")){
-                            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                        }
+                    user.setPosition(latLng);
+                    if(blokada.getTag().toString().equals("fixed")){
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                     }
                 }
             }
@@ -250,6 +247,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final EditText input = new EditText(context);
 
                 input.setInputType(InputType.TYPE_CLASS_TEXT );
+                Calendar currentTime = Calendar.getInstance();
+                input.setText("Parking " + currentTime.get(currentTime.YEAR) + "-" + (currentTime.get(currentTime.MONTH) + 1) + "-" + currentTime.get(currentTime.DAY_OF_MONTH) + " " + currentTime.get(currentTime.HOUR_OF_DAY)
+                        + ":" +  currentTime.get(currentTime.MINUTE) + ":" + currentTime.get(currentTime.SECOND));
                 builder.setView(input);
 
                 builder.setPositiveButton("Zatwierdź", new DialogInterface.OnClickListener() {
@@ -302,34 +302,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapLongClickListener(this);
-
-       mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker arg0) {
-                System.out.println("Klik");
                 if(dzienniki.contains(arg0)){
-                    Intent intent = new Intent(MapsActivity.this, Notes2Activity.class);
+                    Intent intent = new Intent(MapsActivity.this,
+                            Notes2Activity.class);
                     intent.putExtra("nazwa", arg0.getTitle());
                     MapsActivity.this.startActivity(intent);
                 }
-
             }
         });
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(51.11, 17.022222);
-        // mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+        LatLng wroclaw = new LatLng(51.11, 17.022222);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(wroclaw));
         mMap.setMinZoomPreference(5.0f);
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(wroclaw));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         mAdapter.setMapa(mMap);
 
         user = mMap.addMarker(new MarkerOptions()
-                .position(sydney)
+                .position(wroclaw)
                 .title("Tu jesteś").icon(BitmapDescriptorFactory.fromResource(R.drawable.user25)));
 
 

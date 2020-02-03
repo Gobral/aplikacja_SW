@@ -9,23 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    public ArrayList<Wpis> mDataset;
+public class AdapterNewsow extends RecyclerView.Adapter<AdapterNewsow.MyViewHolder> {
+    public ArrayList<NewsClass> mDataset;
     public String[] tablica;
     public Context context;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public ImageView imageView;
         public TextView textView;
         public CardView cardView;
@@ -37,22 +32,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(ArrayList<Wpis> parametry, Context context) {
-        mDataset = parametry;
+    public AdapterNewsow(ArrayList<NewsClass> mDataset, Context context) {
+        this.mDataset = mDataset;
         this.context = context;
     }
 
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public AdapterNewsow.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                         int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.news_sr_view, parent, false);
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
+    }
+    public void aktualizuj(){
+        notifyDataSetChanged();
     }
 
     // Replace the contents of a view (invoked by the layout manager)

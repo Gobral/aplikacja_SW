@@ -141,7 +141,7 @@ public class AdapterPlikowZAparatu extends RecyclerView.Adapter<AdapterPlikowZAp
 
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle("Usuń plik");
-            alert.setMessage("Czy na pewno chcesz usunąć wybrany plik?");
+            alert.setMessage("Czy na pewno chcesz usunąć " + item.getNazwaZdjecia() + "?");
             alert.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // continue with delete

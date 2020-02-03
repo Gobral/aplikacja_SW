@@ -6,10 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -41,6 +48,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class Notes2Activity extends AppCompatActivity {
@@ -55,9 +64,7 @@ public class Notes2Activity extends AppCompatActivity {
         nazwaNotatki = b.getString("nazwa");
         try {
             notatkaEntity = new WczytajNotatke(this, nazwaNotatki).execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -75,6 +82,7 @@ public class Notes2Activity extends AppCompatActivity {
         FloatingActionButton wpis_fab = findViewById(R.id.dodaj_wpis_fb);
         FloatingActionButton nagranie_fab = findViewById(R.id.dodaj_glosowe_fb);
         FloatingActionButton fimy_fab = findViewById(R.id.dodaj_video_fb);
+        FloatingActionButton loklizacja_fab = findViewById(R.id.lokalizacja_update_fb);
         wpis_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,10 +228,13 @@ public class Notes2Activity extends AppCompatActivity {
                 TextView start = relativeLayout.findViewById(R.id.dialog_nagranie_start);
                 TextView stop = relativeLayout.findViewById(R.id.dialog_nagranie_stop);
                 TextView zapisz = relativeLayout.findViewById(R.id.dialog_nagranie_zapisz);
+                TextView czas = relativeLayout.findViewById(R.id.dialog_nagranie_aktualnie_nagrano);
+                final int[] sekundy = {0};
+                Timer timer = new Timer();
 
 
                 File path = getExternalCacheDir();
-                String nazwa_nagrania = "nagranie" + "_" + currentTime.get(currentTime.YEAR) + currentTime.get(currentTime.MONTH) + currentTime.get(currentTime.DAY_OF_MONTH) + "_" + currentTime.get(currentTime.HOUR_OF_DAY)
+                String nazwa_nagrania = "Nagranie" + "_" + currentTime.get(currentTime.YEAR) + currentTime.get(currentTime.MONTH) + currentTime.get(currentTime.DAY_OF_MONTH) + "_" + currentTime.get(currentTime.HOUR_OF_DAY)
                         + currentTime.get(currentTime.MINUTE) + currentTime.get(currentTime.SECOND) + currentTime.get(currentTime.MILLISECOND) + ".3gp";
                 File nowe_nagranie = new File(path, nazwa_nagrania);
 
@@ -238,13 +249,25 @@ public class Notes2Activity extends AppCompatActivity {
                         try {
                             nowe_nagranie.createNewFile();
                             mediaRecorder = new MediaRecorder();
-                            // Configure the input sources.
                             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                            // Set the output format and encoder.
                             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                             mediaRecorder.setOutputFile(nowe_nagranie.getPath());
                             mediaRecorder.prepare();
+                            timer.scheduleAtFixedRate(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    runOnUiThread(new Runnable()  {
+                                        @Override
+                                        public void run() {
+                                            sekundy[0]++;
+                                            int minuty = sekundy[0] / 60;
+                                            int sekunda_minuty = sekundy[0] - minuty * 60;
+                                            czas.setText(minuty + ":" + (sekunda_minuty < 10 ? "0" + sekunda_minuty : sekunda_minuty));
+                                        }
+                                    });
+                                }
+                            }, 1000, 1000);
                             mediaRecorder.start();
                         }
                         catch (IOException e) {
@@ -265,6 +288,8 @@ public class Notes2Activity extends AppCompatActivity {
                         mediaRecorder.reset();
                         mediaRecorder.release();
 
+                        timer.cancel();
+
                         zapisz.setClickable(true);
                         zapisz.setTextColor(getResources().getColor(R.color.colorAccent));
                     }
@@ -284,6 +309,61 @@ public class Notes2Activity extends AppCompatActivity {
                     }
                 });
                 alertDialog.show();
+            }
+        });
+
+        loklizacja_fab.setTag(false);
+
+        loklizacja_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(!(Boolean) loklizacja_fab.getTag());
+                if (!(Boolean) loklizacja_fab.getTag()) {
+                    Context context = Notes2Activity.this;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Czy na pewno chcesz zaktualizować lokalizację dziennika?");
+
+                    builder.setPositiveButton("Zatwierdź", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            loklizacja_fab.setTag(true);
+                            loklizacja_fab.setImageResource(R.drawable.ic_gps_fixed_black_24dp);
+                            LocationCallback mLocationCallback = new LocationCallback() {
+                                @Override
+                                public void onLocationResult(LocationResult locationResult) {
+                                    if ((Boolean) loklizacja_fab.getTag()) {
+                                        Location location = new Location(locationResult.getLastLocation());
+                                        notatkaEntity.setLattitude(location.getLatitude());
+                                        notatkaEntity.setLongitude(location.getLongitude());
+                                        loklizacja_fab.setTag(false);
+                                        Toast.makeText(context, "Zaktualizowano lokalizację.", Toast.LENGTH_LONG).show();
+                                        loklizacja_fab.setImageResource(R.drawable.ic_gps_not_fixed_black_24dp);
+                                        new AktualizujNotatke(Notes2Activity.this, notatkaEntity).execute();
+                                    }
+                                }
+                            };
+
+                            FusedLocationProviderClient fusedLocationClient = null;
+                            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+                            LocationRequest request = new LocationRequest()
+                                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                                    .setInterval(2000); // Update every 5 seconds.
+                            fusedLocationClient.requestLocationUpdates(request, mLocationCallback, null);
+                        }
+                    });
+                    builder.setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();
+                } //if ((Boolean) loklizacja_fab.getTag()) {
+                else {
+                    loklizacja_fab.setTag(false);
+                    loklizacja_fab.setImageResource(R.drawable.ic_gps_not_fixed_black_24dp);
+                }
             }
         });
 
@@ -314,6 +394,28 @@ public class Notes2Activity extends AppCompatActivity {
 
             }
             return ne;
+        }
+
+    }
+
+    private class AktualizujNotatke extends AsyncTask<Void, Void, NotatkaEntity> {
+
+        private WeakReference<Activity> weakActivity;
+        private NotatkaEntity notatka;
+        private Context context;
+
+        public AktualizujNotatke(Activity activity, NotatkaEntity notatka) {
+            weakActivity = new WeakReference<>(activity);
+            this.context = activity.getApplicationContext();
+            this.notatka = notatka;
+        }
+
+        @Override
+        protected NotatkaEntity doInBackground(Void... params) {
+
+            NotatkiDatabase notatkiDb = NotatkaDatabaseAccessor.getInstance(context);
+            notatkiDb.notatkiDAO().updateNotatka(notatka);
+            return notatka;
         }
 
     }

@@ -20,7 +20,6 @@ public class WyswietlanieNewsaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wyswietlanie_newsa);
 
         url_strony = "http://slaskwroclaw.pl" + url_strony;
-
         WebView webView = findViewById(R.id.widok_strony);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient(){
@@ -29,7 +28,9 @@ public class WyswietlanieNewsaActivity extends AppCompatActivity {
                 super.onPageFinished(view, url);
             }
             @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(url.startsWith("vnd.youtube") || url.startsWith("https://www.youtube.com") || url.startsWith("www.youtube.com") || url.startsWith("http://www.youtube.com")) {
+                if(url.startsWith("vnd.youtube") || url.startsWith("https://www.youtube.com")
+                        || url.startsWith("www.youtube.com")
+                        || url.startsWith("http://www.youtube.com")) {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(intent);
                     return true;

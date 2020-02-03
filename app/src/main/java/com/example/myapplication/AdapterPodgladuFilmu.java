@@ -141,7 +141,7 @@ public class AdapterPodgladuFilmu extends RecyclerView.Adapter<AdapterPodgladuFi
 
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle("Usuń plik");
-            alert.setMessage("Czy na pewno chcesz usunąć wybrany plik?");
+            alert.setMessage("Czy na pewno chcesz usunąć " + item.getNazwaFilmud() +"?");
             alert.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // continue with delete

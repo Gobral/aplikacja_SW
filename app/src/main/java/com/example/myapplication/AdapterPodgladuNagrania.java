@@ -102,16 +102,16 @@ public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgla
                 System.out.println(e);
             }
         }
-        public void openPlayer(GlosoweEntity we){
+        public void openPlayer(GlosoweEntity nagranieGlosowe){
+
+            Activity activity = (Activity) context;
+            int mFileDuration = 0;
 
             MediaPlayer mPlayer = new MediaPlayer();
-            Activity activity = (Activity) context;
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            int mFileDuration = 0;
             Handler mHandler = new Handler();
-
             try {
-                mPlayer.setDataSource(we.getPath());
+                mPlayer.setDataSource(nagranieGlosowe.getPath());
                 mPlayer.prepare();
                 mFileDuration = mPlayer.getDuration();
 
@@ -177,7 +177,7 @@ public class AdapterPodgladuNagrania extends RecyclerView.Adapter< AdapterPodgla
                 }
             });
 
-            nazwaPliku.setText(we.getNazwaNagrania());
+            nazwaPliku.setText(nagranieGlosowe.getNazwaNagrania());
 
             builder.setView(relativeLayout);
             builder.setOnDismissListener((DialogInterface.OnDismissListener) dialog -> mPlayer.stop());
